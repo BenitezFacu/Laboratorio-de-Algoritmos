@@ -1,0 +1,11 @@
+Los problemas son:
+
+a) 0.2 + 0.1
+b) 3 * 0.1
+
+Los resultados son:
+
+a) 0.30000000000000004
+b) 0.30000000000000004
+
+Conclusión: El resultado no es el esperado ya que suponía que el valor dado nos daría un número entero que sería 3

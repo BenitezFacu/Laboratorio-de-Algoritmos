@@ -8,4 +8,4 @@ print(f"Tu nombre es: {nombre.capitalize()}")
 print(f"Tu apellido es: {apellido.casefold()}")
 
 #El capitalize() produce que la primera letra del string que introdujiste sea mayúscula
-#El casefold() produce que toda el string ingresado este en minúsculaa
+#El casefold() produce que toda el string ingresado este en minúsculas
