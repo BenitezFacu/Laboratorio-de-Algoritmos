@@ -1,10 +1,6 @@
 import os
 os.system('cls')
 
-import os
-os.system('cls')
-
-
 Pepe = {
     "nombre" : "Pepe",
     "Mascota" : "Guacamayo"}
@@ -16,6 +12,8 @@ Jose = {
     "nombre" : "Jose",
     "Mascota" : "Tigre"
 }
+
 animales =[Pepe,Mateo,Jose]
-for animal in animales:
-    print(animal)
+
+for a in animales:
+    print(a)

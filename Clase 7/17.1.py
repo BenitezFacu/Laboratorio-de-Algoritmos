@@ -21,5 +21,6 @@ Jose = {
     "ciudad": "Emergilda",
 }
 personas =[Pepe,Mateo,Jose]
+
 for persona in personas:
     print(persona)
