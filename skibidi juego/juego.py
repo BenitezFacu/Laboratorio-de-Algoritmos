@@ -25,7 +25,7 @@ flecha_3 = pygame.image.load('Personajes/flecha_3.png')
 flecha_4 = pygame.image.load('Personajes/flecha_4.png')
 fondo = pygame.image.load('Fondos/fondo_1.jpg')
 fondo_2 = pygame.image.load('Fondos/fondo_2.jpg')
-fondo_3 = pygame.image.load('Fondos/fondo_3.png')
+fondo_3 = pygame.image.load('Fondos/fondo_4.png')
 
 #Escalado
 flecha = pygame.transform.scale(flecha, (500, 100))
@@ -48,6 +48,10 @@ texto_5 = fuente_2.render("Oleada:", True, blanco)
 texto_6 = fuente.render("Salir", True, blanco)
 texto_7 = fuente_2.render("Ingrese su nombre:", True, blanco)
 texto_8 = fuente_2.render("Cargando Juego...", True, blanco)
+
+seleccion = 0
+seleccion_2 = 0
+skibidi = True
 
 def cargar_puntuaciones():
     try:
@@ -259,6 +263,7 @@ def crear_aliens(contador, alien_velocidad): #Creación de los aliens
             contador = 0
 
 crear_aliens(contador, alien_velocidad)
+
 nave = nave(400, 500, 5)
 
 tiempo_ultimo_disparo = 0
@@ -272,7 +277,6 @@ explosiones = []
 
 vidas = 3
 puntaje = 0
-
 fondo_actual = fondo
 
 perder = False
@@ -281,10 +285,6 @@ mostrar_nave = False
 bajar_una_fila = False
 scoreaboard = False
 menu = True
-
-seleccion = 0
-seleccion_2 = 0
-skibidi = True
 
 nombre = ""
 clock = pygame.time.Clock()
