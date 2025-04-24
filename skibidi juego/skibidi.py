@@ -1,4 +1,4 @@
-import os, pygame, random
+import os, pygame, random, json
 os.system('cls')
 
 pygame.init()
@@ -9,7 +9,7 @@ negro = (0, 0, 0)
 
 ancho, alto = 800, 600
 
-pantalla = pygame.display.set_mode((ancho, alto)) 
+pantalla = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption('skibidi invaders') 
 
 explosion_sonido = pygame.mixer.Sound('Sonidos/explosion.wav')
@@ -20,6 +20,7 @@ perder_sonido = pygame.mixer.Sound('Sonidos/perder.wav')
 flecha = pygame.image.load('Personajes/flecha.png')
 flecha_2 = pygame.image.load('Personajes/flecha_2.png')
 flecha_3 = pygame.image.load('Personajes/flecha_3.png')
+flecha_4 = pygame.image.load('Personajes/flecha_4.png')
 fondo = pygame.image.load('Fondos/fondo_1.jpg')
 fondo_2 = pygame.image.load('Fondos/fondo_2.jpg')
 fondo_3 = pygame.image.load('Fondos/fondo_3.png')
@@ -34,12 +35,45 @@ fondo_3 = pygame.transform.scale(fondo_3, (800, 600))
 fondo_4 = pygame.transform.scale(fondo_4, (800, 600))
 
 fuente = pygame.font.Font("Caligrafías/PressStart2P.ttf", 36)
+fuente_2 = pygame.font.Font("Caligrafías/PressStart2P.ttf", 24)
+texto_1 = fuente_2.render("Presione esc para volver al menú", True, blanco)
 texto_2 = fuente.render("Jugar", True, blanco)
-texto_3 = fuente.render("Tutorial", True, blanco)
+texto_3 = fuente.render("Puntajes", True, blanco)
+texto_4 = fuente_2.render("Puntos:", True, blanco)
+texto_5 = fuente_2.render("Oleada:", True, blanco)
+texto_6 = fuente.render("Salir", True, blanco)
 
 seleccion = 0
 seleccion_2 = 0
 skibidi = True
+
+def cargar_puntuaciones():
+    try:
+        with open('scores.json', 'r') as file:
+            data = json.load(file)
+        return data['high_scores']
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+def guardar_puntuaciones(puntuaciones):
+    with open('scores.json', 'w') as file:
+        json.dump({"high_scores": puntuaciones}, file, indent=4)
+
+def actualizar_puntuaciones(puntuacion_nueva, nombre_jugador):
+    puntuaciones = cargar_puntuaciones()
+    puntuaciones.append({"name": nombre_jugador, "score": puntuacion_nueva})
+    puntuaciones.sort(key=lambda x: x['score'], reverse=True)
+    if len(puntuaciones) > 5:
+        puntuaciones = puntuaciones[:5]
+    guardar_puntuaciones(puntuaciones)
+
+def mostrar_scoreboard(pantalla):
+    puntuaciones = cargar_puntuaciones()  # Cargar las puntuaciones guardadas
+    fuente_scoreboard = pygame.font.Font("Caligrafías/PressStart2P.ttf", 24)
+    texto_scoreboard = fuente_scoreboard.render("Scoreboard", True, blanco)
+    pantalla.blit(texto_scoreboard, (270, 50))  # Título del scoreboard en la parte superior
+    for i, puntuacion in enumerate(puntuaciones):  # Mostrar las 5 mejores puntuaciones
+        texto_puntuacion = fuente_scoreboard.render(f"{i + 1}. {puntuacion['name']} - {puntuacion['score']}", True, blanco)
+        pantalla.blit(texto_puntuacion, (200, 100 + (i * 30)))  # Dibujar las puntuaciones en la pantalla
 
 class nave:
     def __init__(self, x, y , velocidad):
@@ -72,14 +106,10 @@ class nave:
         pantalla.blit(self.image, self.rect)
     
     def naves(self, pantalla, vidas):
-        screen_width, screen_height = pantalla.get_size()
-        
-        base_x = screen_width - (vidas * self.image.get_width() + (vidas - 1) * 10)
-        base_y = screen_height - self.image.get_height() - 10
-        
+        x = 0
+        y = 550
         for a in range(vidas):
-            pantalla.blit(self.image, (base_x + (self.image.get_width() + 10) * a, base_y))
-
+            pantalla.blit(self.image, (x + (self.image.get_width() + 10) * a, y))
 
 class bala:
     def __init__(self, x, y, velocidad):
@@ -134,13 +164,14 @@ class Alien:
         self.velocidad = velocidad
         self.animation_timer = 0
         self.current_image = 0
+        self.valor = 20
 
-    def movimiento(self, dx, bajar):
+    def movimiento(self, bajar):
         self.rect.x += self.velocidad
         if bajar:
-            self.rect.y += 10
+            self.rect.y += 5
 
-    def animar(self):
+    def animar(self): #Animación de los aliens
         self.animation_timer += 1
         if self.animation_timer >= 10:
             self.current_image = (self.current_image + 1) % len(self.images)
@@ -161,13 +192,14 @@ class Alien_1:
         self.velocidad = velocidad
         self.animation_timer = 0
         self.current_image = 0
+        self.valor = 15
 
-    def movimiento(self, dx, bajar):
+    def movimiento(self, bajar):
         self.rect.x += self.velocidad
         if bajar:
-            self.rect.y += 10
+            self.rect.y += 5
 
-    def animar(self):
+    def animar(self): #Animación de los aliens
         self.animation_timer += 1
         if self.animation_timer >= 10:
             self.current_image = (self.current_image + 1) % len(self.images)
@@ -188,13 +220,14 @@ class Alien_2:
         self.velocidad = velocidad
         self.animation_timer = 0
         self.current_image = 0
+        self.valor = 10
 
-    def movimiento(self, dx, bajar):
+    def movimiento(self, bajar):
         self.rect.x += self.velocidad
         if bajar:
-            self.rect.y += 10
+            self.rect.y += 5
 
-    def animar(self):
+    def animar(self): #Animación de los aliens
         self.animation_timer += 1
         if self.animation_timer >= 10:
             self.current_image = (self.current_image + 1) % len(self.images)
@@ -224,75 +257,111 @@ def crear_aliens(contador, alien_velocidad): #Creación de los aliens
             contador = 0
 
 crear_aliens(contador, alien_velocidad)
+
 nave = nave(400, 500, 5)
 
 tiempo_ultimo_disparo = 0
 tiempo_ultimo_disparo_alien = 0
-cooldown_disparo = 500
-cooldown_disparo_alien = 500
+cd_disparo = 500
+cd_disparo_alien = 500
 
 balas = []
 balas_aliens = []
 explosiones = []
 
 vidas = 3
-
+puntaje = 0
 fondo_actual = fondo
 
 perder = False
 mostrar_textos = True
 mostrar_nave = False
 bajar_una_fila = False
+scoreaboard = False
+menu = True
 
 while skibidi:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             skibidi = False
         elif evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_DOWN:
-                if seleccion < 1:
-                    seleccion += 1
-            if evento.key == pygame.K_UP:
-                if seleccion > 0:
-                    seleccion -= 1
-            if seleccion == 0: #Cambio de fondo
-                if evento.key == pygame.K_RETURN:
-                    if fondo_actual == fondo:
+            if menu == True:
+                if evento.key == pygame.K_DOWN:
+                    if seleccion < 2:
+                        seleccion += 1
+                if evento.key == pygame.K_UP:
+                    if seleccion > 0:
+                        seleccion -= 1
+                if seleccion == 0: #Cambio de fondo
+                    if evento.key == pygame.K_RETURN:
                         fondo_actual = fondo_2
                         mostrar_textos = False
                         mostrar_nave = True
+                        mostrar_nave_2 = False
                         pygame.mixer.music.load("Sonidos/fondo.wav")
                         pygame.mixer.music.play(-1)
-            if seleccion == 1:
-                if evento.key == pygame.K_RETURN: #Cambio de fondo
-                    if fondo_actual == fondo:
-                        fondo_actual = fondo_3
+                        scoreaboard = False
+                        menu = False
+                if seleccion == 1:
+                    if evento.key == pygame.K_RETURN: #Cambio de fondo
+                        fondo_actual = fondo_2
                         mostrar_textos = False
+                        scoreaboard = True
+                if seleccion == 2:
+                    if evento.key == pygame.K_RETURN:
+                        skibidi = False
+                if evento.key == pygame.K_ESCAPE and seleccion == 1:
+                    mostrar_scoreboard_flag = False  # Dejar de mostrar el scoreboard
+                    seleccion = 0 
+
         if evento.type == pygame.KEYDOWN: #Disparo de las balas
             if evento.key == pygame.K_SPACE and mostrar_nave:
                 tiempo_actual = pygame.time.get_ticks()
-                if tiempo_actual - tiempo_ultimo_disparo > cooldown_disparo:
+                if tiempo_actual - tiempo_ultimo_disparo > cd_disparo:
                     nueva_bala = bala(nave.rect.centerx - 11, nave.rect.y, 10) #Velocidad bala
                     balas.append(nueva_bala)
                     disparo_sonido.play()
                     tiempo_ultimo_disparo = tiempo_actual
+        if evento.type == pygame.KEYDOWN: #Volver al menú
+            if evento.key == pygame.K_ESCAPE:
+                if scoreaboard:
+                    fondo_actual = fondo
+                    scoreaboard = False
+                    mostrar_textos = True
+                    seleccion = 0
 
     pantalla.blit(fondo_actual,(0, 0))
 
     if mostrar_textos: #Dibujar el texto y el fondo
         pantalla.blit(texto_2, (315 , 250))
-        pantalla.blit(texto_3, (265, 400))
+        pantalla.blit(texto_3, (270, 340))
+        pantalla.blit(texto_6, (315, 440))
         if seleccion == 0:
             pantalla.blit(flecha_2, (152, 220))
         elif seleccion == 1:
-            pantalla.blit(flecha, (162, 370))
+            pantalla.blit(flecha, (162, 310))
+        elif seleccion == 2:
+            pantalla.blit(flecha_2, (152, 410))
     
-    if mostrar_nave: #Dibujar nave y las vidas
+    if scoreaboard == True:
+        mostrar_scoreboard(pantalla)
+        pantalla.blit(texto_1, (20, 500))
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_ESCAPE]:
+        pantalla.blit(fondo_actual, (0, 0))
+    
+    if mostrar_nave == True: #Dibujar nave y las vidas
         keys = pygame.key.get_pressed()
         nave.moverse(keys)
         nave.dibujar(pantalla)
         nave.vidas(aliens, nave)
         nave.naves(pantalla, vidas)
+        pantalla.blit(texto_4, (25, 25))
+        puntos = fuente_2.render(str(puntaje), True, blanco)
+        pantalla.blit(puntos, (200, 25))
+        pantalla.blit(texto_5, (575, 25))
+        oleadas = fuente_2.render(str(oleada), True, blanco)
+        pantalla.blit(oleadas, (750, 25))
         if mostrar_nave and len(aliens) == 0:
             oleada += 1
             alien_velocidad += 1
@@ -307,7 +376,7 @@ while skibidi:
                 break
 
         for alien in aliens: #Dibujar los aliens
-            alien.movimiento(alien_velocidad, bajar_una_fila)
+            alien.movimiento(bajar_una_fila)
             alien.dibujar(pantalla)
             alien.animar()
         bajar_una_fila = False
@@ -316,13 +385,14 @@ while skibidi:
             disparo.disparar()
             disparo.dibujar(pantalla)
 
-        for bala_obj in balas[:]: #Colisión bala-alien y explosión alien
+        for a in balas[:]: #Colisión bala-alien y explosión alien
             for alien in aliens[:]:
-                if bala_obj.rect.colliderect(alien.rect):
-                    balas.remove(bala_obj)
+                if a.rect.colliderect(alien.rect):
+                    balas.remove(a)
                     aliens.remove(alien)
                     explosiones.append(explosion(alien.rect.centerx - 20, alien.rect.centery - 15))
                     explosion_sonido.play()
+                    puntaje += alien.valor
                     break
 
         for a in explosiones[:]: #Explosión alien
@@ -332,7 +402,7 @@ while skibidi:
                 a.dibujar(pantalla)
 
         tiempo_actual = pygame.time.get_ticks() #Balas de los aliens
-        if len(aliens) > 0 and tiempo_actual - tiempo_ultimo_disparo_alien > cooldown_disparo_alien:
+        if len(aliens) > 0 and tiempo_actual - tiempo_ultimo_disparo_alien > cd_disparo_alien:
             disparar = random.choice(aliens)
             disparo_alien = bala_alien(disparar.rect.centerx, disparar.rect.centery, 5) #Velocidad bala alien
             balas_aliens.append(disparo_alien)
@@ -342,9 +412,9 @@ while skibidi:
             disparo.disparar()
             disparo.dibujar(pantalla)
 
-        for balas_alien_obj in balas_aliens[:]: #Colisión bala alien-nave
-            if balas_alien_obj.rect.colliderect(nave.rect):
-                balas_aliens.remove(balas_alien_obj)
+        for a in balas_aliens[:]: #Colisión bala alien-nave
+            if a.rect.colliderect(nave.rect):
+                balas_aliens.remove(a)
                 explosion_sonido.play()
                 vidas -= 1
                 break
@@ -374,6 +444,8 @@ while skibidi:
     
         if keys[pygame.K_RETURN]:
             if seleccion_2 == 0:
+                nombre_jugador = input(("Ingresa tu nombre para el scoreboard: "))
+                actualizar_puntuaciones(puntaje, nombre_jugador)
                 vidas = 3
                 nave.rect.x = 400
                 nave.rect.y = 500
@@ -387,6 +459,12 @@ while skibidi:
                 oleada = 1
                 alien_velocidad = 1
                 crear_aliens(contador, alien_velocidad)
+                menu = True
+            if seleccion_2 == 1:
+                nombre_jugador = input(("Ingresa tu nombre para el scoreboard: "))
+                actualizar_puntuaciones(puntaje, nombre_jugador)
+                mostrar_scoreboard(pantalla)
+                skibidi = False
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)
