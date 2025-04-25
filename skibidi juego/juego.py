@@ -25,7 +25,7 @@ flecha_3 = pygame.image.load('Personajes/flecha_3.png')
 flecha_4 = pygame.image.load('Personajes/flecha_4.png')
 fondo = pygame.image.load('Fondos/fondo_1.jpg')
 fondo_2 = pygame.image.load('Fondos/fondo_2.jpg')
-fondo_3 = pygame.image.load('Fondos/fondo_4.png')
+fondo_3 = pygame.image.load('Fondos/fondo_3.png')
 
 #Escalado
 flecha = pygame.transform.scale(flecha, (500, 100))

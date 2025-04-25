@@ -56,6 +56,7 @@ def cargar_puntuaciones():
         return data['high_scores']
     except (FileNotFoundError, json.JSONDecodeError):
         return []
+
 def guardar_puntuaciones(puntuaciones):
     with open('scores.json', 'w') as file:
         json.dump({"high_scores": puntuaciones}, file, indent=4)
