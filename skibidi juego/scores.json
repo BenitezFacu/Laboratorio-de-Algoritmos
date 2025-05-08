@@ -1,6 +1,7 @@
 {
     "high_scores": [
         {
+<<<<<<< HEAD
             "name": "tralalero",
             "score": 3490
         },
@@ -19,6 +20,26 @@
         {
             "name": "skibidi",
             "score": 360
+=======
+            "name": "123",
+            "score": 150
+        },
+        {
+            "name": "123",
+            "score": 85
+        },
+        {
+            "name": "123",
+            "score": 80
+        },
+        {
+            "name": "123",
+            "score": 75
+        },
+        {
+            "name": "123",
+            "score": 75
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
         }
     ]
 }

@@ -12,11 +12,24 @@ ancho, alto = 800, 600
 pantalla = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption('skibidi invaders') 
 
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:skibidi juego/skibidi.py
+#explosion_sonido = pygame.mixer.Sound('Sonidos/explosion.wav')
+#disparo_sonido = pygame.mixer.Sound('Sonidos/shoot.wav')
+#musica_sonido = pygame.mixer.Sound('Sonidos/fondo.wav')
+#perder_sonido = pygame.mixer.Sound('Sonidos/perder.wav')
+========
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
 #Sonidos
 explosion_sonido = pygame.mixer.Sound('Sonidos/explosion.wav')
 disparo_sonido = pygame.mixer.Sound('Sonidos/shoot.wav')
 musica_sonido = pygame.mixer.Sound('Sonidos/fondo.wav')
 perder_sonido = pygame.mixer.Sound('Sonidos/perder.wav')
+<<<<<<< HEAD
+=======
+>>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac:skibidi juego/juego.py
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
 
 #Cargar fondos y flechas
 flecha = pygame.image.load('Personajes/flecha.png')
@@ -329,8 +342,13 @@ while skibidi:
                         mostrar_textos = False
                         mostrar_nave = True
                         mostrar_nave_2 = False
+<<<<<<< HEAD
                         pygame.mixer.music.load("Sonidos/fondo.wav")
                         pygame.mixer.music.play(-1)
+=======
+                        #pygame.mixer.music.load("Sonidos/fondo.wav")
+                        #pygame.mixer.music.play(-1)
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
                         scoreaboard = False
                         menu = False
                 if seleccion == 1:
@@ -352,7 +370,11 @@ while skibidi:
                 if tiempo_actual - tiempo_ultimo_disparo > cd_disparo:
                     nueva_bala = bala(nave.rect.centerx - 11, nave.rect.y, 10) #Velocidad bala
                     balas.append(nueva_bala)
+<<<<<<< HEAD
                     disparo_sonido.play()
+=======
+                    #disparo_sonido.play()
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
                     tiempo_ultimo_disparo = tiempo_actual
         if evento.type == pygame.KEYDOWN: #Volver al menú
             if evento.key == pygame.K_ESCAPE:
@@ -423,7 +445,11 @@ while skibidi:
                     balas.remove(a)
                     aliens.remove(alien)
                     explosiones.append(explosion(alien.rect.centerx - 20, alien.rect.centery - 15))
+<<<<<<< HEAD
                     explosion_sonido.play()
+=======
+                    #explosion_sonido.play()
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
                     puntaje += alien.valor
                     break
 
@@ -447,7 +473,11 @@ while skibidi:
         for a in balas_aliens[:]: #Colisión bala alien-nave
             if a.rect.colliderect(nave.rect):
                 balas_aliens.remove(a)
+<<<<<<< HEAD
                 explosion_sonido.play()
+=======
+                #explosion_sonido.play()
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
                 vidas -= 1
                 break
 
@@ -457,8 +487,13 @@ while skibidi:
         pantalla.blit(fondo_actual, (0, 0))
     
         if perder == False:
+<<<<<<< HEAD
             pygame.mixer.music.pause()
             perder_sonido.play()
+=======
+            #pygame.mixer.music.pause()
+            #perder_sonido.play()
+>>>>>>> fe6839780776beefd82ad9022f72d5937e417aac
             perder = True
     
         if seleccion_2 == 0:
