@@ -1,4 +1,4 @@
-import os, pygame, random, json
+import os, pygame, random, json, time
 os.system('cls')
 
 pygame.init()
@@ -12,11 +12,13 @@ ancho, alto = 800, 600
 pantalla = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption('skibidi invaders') 
 
-#explosion_sonido = pygame.mixer.Sound('Sonidos/explosion.wav')
-#disparo_sonido = pygame.mixer.Sound('Sonidos/shoot.wav')
-#musica_sonido = pygame.mixer.Sound('Sonidos/fondo.wav')
-#perder_sonido = pygame.mixer.Sound('Sonidos/perder.wav')
+#Sonidos
+explosion_sonido = pygame.mixer.Sound('Sonidos/explosion.wav')
+disparo_sonido = pygame.mixer.Sound('Sonidos/shoot.wav')
+musica_sonido = pygame.mixer.Sound('Sonidos/fondo.wav')
+perder_sonido = pygame.mixer.Sound('Sonidos/perder.wav')
 
+#Cargar fondos y flechas
 flecha = pygame.image.load('Personajes/flecha.png')
 flecha_2 = pygame.image.load('Personajes/flecha_2.png')
 flecha_3 = pygame.image.load('Personajes/flecha_3.png')
@@ -24,24 +26,28 @@ flecha_4 = pygame.image.load('Personajes/flecha_4.png')
 fondo = pygame.image.load('Fondos/fondo_1.jpg')
 fondo_2 = pygame.image.load('Fondos/fondo_2.jpg')
 fondo_3 = pygame.image.load('Fondos/fondo_3.png')
-fondo_4 = pygame.image.load('Fondos/fondo_4.png')
 
+#Escalado
 flecha = pygame.transform.scale(flecha, (500, 100))
 flecha_2 = pygame.transform.scale(flecha_2, (500, 100))
 flecha_3 = pygame.transform.scale(flecha_3, (500, 100))
 fondo = pygame.transform.scale(fondo, (800, 600))
 fondo_2 = pygame.transform.scale(fondo_2, (800, 600))
 fondo_3 = pygame.transform.scale(fondo_3, (800, 600))
-fondo_4 = pygame.transform.scale(fondo_4, (800, 600))
 
+#Caligrafías
 fuente = pygame.font.Font("Caligrafías/PressStart2P.ttf", 36)
 fuente_2 = pygame.font.Font("Caligrafías/PressStart2P.ttf", 24)
+
+#Textos
 texto_1 = fuente_2.render("Presione esc para volver al menú", True, blanco)
 texto_2 = fuente.render("Jugar", True, blanco)
 texto_3 = fuente.render("Puntajes", True, blanco)
 texto_4 = fuente_2.render("Puntos:", True, blanco)
 texto_5 = fuente_2.render("Oleada:", True, blanco)
 texto_6 = fuente.render("Salir", True, blanco)
+texto_7 = fuente_2.render("Ingrese su nombre:", True, blanco)
+texto_8 = fuente_2.render("Cargando Juego...", True, blanco)
 
 seleccion = 0
 seleccion_2 = 0
@@ -280,12 +286,16 @@ bajar_una_fila = False
 scoreaboard = False
 menu = True
 
+nombre = ""
+clock = pygame.time.Clock()
+
 while skibidi:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             skibidi = False
         elif evento.type == pygame.KEYDOWN:
             if menu == True:
+                Ingrese_nombre = True
                 if evento.key == pygame.K_DOWN:
                     if seleccion < 2:
                         seleccion += 1
@@ -294,12 +304,33 @@ while skibidi:
                         seleccion -= 1
                 if seleccion == 0: #Cambio de fondo
                     if evento.key == pygame.K_RETURN:
+                        while Ingrese_nombre == True: #Ingreso de nombre
+                            clock.tick(60)
+                            pantalla.blit(fondo_2, (0, 0))
+                            for evento in pygame.event.get():
+                                if evento.type == pygame.QUIT:
+                                    pygame.quit()
+                                elif evento.type == pygame.KEYDOWN:
+                                    if evento.key == pygame.K_RETURN:
+                                        Ingrese_nombre = False
+                                    elif evento.key == pygame.K_BACKSPACE:
+                                        nombre = nombre[:-1]
+                                    else:
+                                        nombre += evento.unicode
+                            usuario = fuente_2.render(nombre, True, blanco)
+                            pantalla.blit(texto_7, (25, 285))
+                            pantalla.blit(usuario, (475, 285))
+                            pygame.display.update()
+                        pantalla.blit(fondo_2, (0, 0))
+                        pantalla.blit(texto_8, (200, 290))
+                        pygame.display.update()
+                        time.sleep(2)
                         fondo_actual = fondo_2
                         mostrar_textos = False
                         mostrar_nave = True
                         mostrar_nave_2 = False
-                        #pygame.mixer.music.load("Sonidos/fondo.wav")
-                        #pygame.mixer.music.play(-1)
+                        pygame.mixer.music.load("Sonidos/fondo.wav")
+                        pygame.mixer.music.play(-1)
                         scoreaboard = False
                         menu = False
                 if seleccion == 1:
@@ -307,6 +338,7 @@ while skibidi:
                         fondo_actual = fondo_2
                         mostrar_textos = False
                         scoreaboard = True
+                        Ingrese_nombre = True
                 if seleccion == 2:
                     if evento.key == pygame.K_RETURN:
                         skibidi = False
@@ -320,7 +352,7 @@ while skibidi:
                 if tiempo_actual - tiempo_ultimo_disparo > cd_disparo:
                     nueva_bala = bala(nave.rect.centerx - 11, nave.rect.y, 10) #Velocidad bala
                     balas.append(nueva_bala)
-                    #disparo_sonido.play()
+                    disparo_sonido.play()
                     tiempo_ultimo_disparo = tiempo_actual
         if evento.type == pygame.KEYDOWN: #Volver al menú
             if evento.key == pygame.K_ESCAPE:
@@ -391,7 +423,7 @@ while skibidi:
                     balas.remove(a)
                     aliens.remove(alien)
                     explosiones.append(explosion(alien.rect.centerx - 20, alien.rect.centery - 15))
-                    #explosion_sonido.play()
+                    explosion_sonido.play()
                     puntaje += alien.valor
                     break
 
@@ -415,18 +447,18 @@ while skibidi:
         for a in balas_aliens[:]: #Colisión bala alien-nave
             if a.rect.colliderect(nave.rect):
                 balas_aliens.remove(a)
-                #explosion_sonido.play()
+                explosion_sonido.play()
                 vidas -= 1
                 break
 
     if vidas == 0:
         mostrar_nave = False
-        fondo_actual = fondo_4
+        fondo_actual = fondo_3
         pantalla.blit(fondo_actual, (0, 0))
     
         if perder == False:
-            #pygame.mixer.music.pause()
-            #perder_sonido.play()
+            pygame.mixer.music.pause()
+            perder_sonido.play()
             perder = True
     
         if seleccion_2 == 0:
@@ -444,8 +476,7 @@ while skibidi:
     
         if keys[pygame.K_RETURN]:
             if seleccion_2 == 0:
-                nombre_jugador = input(("Ingresa tu nombre para el scoreboard: "))
-                actualizar_puntuaciones(puntaje, nombre_jugador)
+                actualizar_puntuaciones(puntaje, nombre)
                 vidas = 3
                 nave.rect.x = 400
                 nave.rect.y = 500
@@ -459,10 +490,11 @@ while skibidi:
                 oleada = 1
                 alien_velocidad = 1
                 crear_aliens(contador, alien_velocidad)
+                puntaje = 0
                 menu = True
+                nombre = ""
             if seleccion_2 == 1:
-                nombre_jugador = input(("Ingresa tu nombre para el scoreboard: "))
-                actualizar_puntuaciones(puntaje, nombre_jugador)
+                actualizar_puntuaciones(puntaje, nombre)
                 mostrar_scoreboard(pantalla)
                 skibidi = False
 
