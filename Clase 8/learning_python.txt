@@ -1,0 +1,4 @@
+En Python podés trabajar con variables y tipos de datos como números, cadenas y listas.
+En Python podés definir funciones con `def`.
+En Python podés usar estructuras de control como `if`, `else`, y `for`.
+En Python podés importar módulos para extender sus funcionalidades.
